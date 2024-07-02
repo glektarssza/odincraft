@@ -36,3 +36,6 @@ tags
 
 # Environment #
 .envrc
+
+# Odin Language Server #
+ols.json
