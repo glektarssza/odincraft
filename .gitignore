@@ -39,3 +39,6 @@ tags
 
 # Odin Language Server #
 ols.json
+
+# Artifacts #
+build/
