@@ -1,7 +1,8 @@
 package odincraft
 
-import "core:fmt"
-
 main :: proc() {
-    fmt.println("Hello world!")
+    game := create_game()
+    game_init(game)
+    game_run(game)
+    game_terminate(game)
 }

@@ -36,6 +36,10 @@ jobs:
       artifact-id: ${{steps.upload-artifacts.outputs.artifact-id}}
       artifact-name: dist-${{inputs.build-os}}
     steps:
+      - id: install-system-dependencies-linux
+        name: Install system dependencies (Linux)
+        if: inputs.build-os == 'linux'
+        run: sudo apt update && sudo apt install --assume-yes --no-install-recommends libglfw3-dev
       - id: checkout-repository
         name: Checkout repository
         uses: actions/checkout@v4
