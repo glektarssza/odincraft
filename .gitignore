@@ -42,3 +42,5 @@ ols.json
 
 # Artifacts #
 build/
+dist/
+*.zip
