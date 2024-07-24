@@ -21,7 +21,8 @@ ODIN_BUILD_DEBUG_FLAGS ?= -o:none -debug
 ODIN_CHECK_FLAGS ?= -strict-style -vet-unused -vet-shadowing -vet-using-stmt	\
 					-vet-using-param -vet-style -vet-semicolon -disallow-do		\
 					-thread-count:4
-ODIN_TEST_FLAGS ?= -o:none -debug -collection:src=$(SOURCE_DIR) -all-packages
+ODIN_TEST_FLAGS ?= -o:none -debug -collection:src=$(SOURCE_DIR)					\
+				   -collection:test_utils=$(TESTS_DIR)/utils -all-packages
 ODIN_DEFINES += -define:PROJECT_NAME="$(PROJECT_NAME)"							\
 				-define:PROJECT_VERSION="$(PROJECT_VERSION)"					\
 				-define:PROJECT_DESCRIPTION="$(PROJECT_DESCRIPTION)"
