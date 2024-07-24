@@ -4,7 +4,7 @@
     "character_width": 80,
     "convert_do": false,
     "exp_multiline_composite_literals": false,
-    "indent_cases": true,
+    "indent_cases": false,
     "newline_limit": 1,
     "newline_style": "LF",
     "spaces": 4,
