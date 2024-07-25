@@ -8,31 +8,21 @@ import "vendor:OpenGL"
 import "vendor:glfw"
 
 /*
-The major version of OpenGL we are using.
-*/
-OPENGL_MAJOR_VERSION :: 4
-
-/*
-The minor version of OpenGL we are using.
-*/
-OPENGL_MINOR_VERSION :: 1
-
-/*
 The main game structure.
 */
 Game :: struct {
     /*
-    Whether the game is initialized.
+    Whether the instance is initialized.
     */
     is_initialized: bool,
 
     /*
-    Whether the game is running.
+    Whether the instance is running.
     */
     is_running:     bool,
 
     /*
-    Whether the game should exit after the current frame.
+    Whether the instance should exit after the current frame.
     */
     should_exit:    bool,
 
@@ -42,24 +32,116 @@ Game :: struct {
     window:         Window,
 }
 
-Game_Init_Error :: enum {
+/*
+An enumeration of possible errors that can occur when a game is destroyed.
+*/
+Game_Destruction_Error :: enum {
+    /*
+    There were no errors.
+    */
     None,
-    Invalid_Game_Pointer,
+
+    /*
+    The provide game was invalid.
+    */
+    Invalid_Game,
+
+    /*
+    The provided game is still initialized.
+    */
+    Still_Initialized,
+
+    /*
+    The provided game is still running.
+    */
+    Still_Running,
+}
+
+/*
+An enumeration of possible errors that can occur when a game is initialized.
+*/
+Game_Initialize_Error :: enum {
+    /*
+    There were no errors.
+    */
+    None,
+
+    /*
+    The provide game was invalid.
+    */
+    Invalid_Game,
+
+    /*
+    The provided game is already initialized.
+    */
     Already_Initialized,
-    Glfw_Init_Failed,
-    Window_Creation_Failed,
+
+    /*
+    The underlying platform failed to initialized.
+    */
+    Platform_Initialization_Failed,
+}
+
+/*
+An enumeration of possible errors that can occur when a game is terminated.
+*/
+Game_Terminate_Error :: enum {
+    /*
+    There were no errors.
+    */
+    None,
+
+    /*
+    The provide game was invalid.
+    */
+    Invalid_Game,
+
+    /*
+    The provided game is not initialized.
+    */
+    Not_Initialized,
+
+    /*
+    The provided game is still running.
+    */
+    Still_Running,
+}
+
+/*
+An enumeration of possible errors that can occur when a game is run.
+*/
+Game_Run_Error :: enum {
+    /*
+    There were no errors.
+    */
+    None,
+
+    /*
+    The provide game was invalid.
+    */
+    Invalid_Game,
+
+    /*
+    The provided game is not initialized.
+    */
+    Not_Initialized,
+
+    /*
+    The provided game is already running.
+    */
+    Already_Running,
 }
 
 /*
 Create a new game instance.
 
-### Parameter ###
+### Parameters ###
 
 * `allocator` - The allocator to use.
 
 ### Returns ###
 
-* `game` - The newly created game instance on success; `nil` otherwise.
+* `game` - The new game instance on success; `nil` on otherwise.
 * `err` - The error that occurred on failure; `.None` otherwise.
 */
 create_game :: proc(
@@ -80,9 +162,9 @@ create_game :: proc(
 /*
 Destroy an existing game instance.
 
-### Parameter ###
+### Parameters ###
 
-* `game` - The game to destroy.
+* `game` - The existing game instance to destroy.
 * `allocator` - The allocator to use.
 
 ### Returns ###
@@ -92,63 +174,102 @@ The error that occurred on failure; `.None` otherwise.
 destroy_game :: proc(
     game: ^Game,
     allocator: mem.Allocator = context.allocator,
-) -> mem.Allocator_Error {
+) -> Game_Destruction_Error {
     context.allocator = allocator
-    if game != nil {
-        destroy_window(game.window)
+    if game == nil {
+        return .Invalid_Game
     }
-    return free(game)
+    if game.is_running {
+        return .Still_Running
+    }
+    if game.is_initialized {
+        return .Still_Initialized
+    }
+    free(game)
+    return .None
 }
 
-game_init :: proc(game: ^Game) -> Game_Init_Error {
+/*
+Initialize an existing game instance.
+
+### Parameters ###
+
+* `game` - The existing game instance to initialize.
+
+### Returns ###
+
+The error that occurred on failure; `.None` otherwise.
+*/
+game_init :: proc(game: ^Game) -> union {
+        Game_Initialize_Error,
+        Window_Creation_Error,
+    } {
     if game == nil {
-        return .Invalid_Game_Pointer
+        return .Invalid_Game
     }
     if game.is_initialized {
         return .Already_Initialized
     }
     if !glfw.Init() {
-        return .Glfw_Init_Failed
+        return .Platform_Initialization_Failed
     }
-    win, _ := create_window(1280, 720, "Odincraft")
-    if win == nil {
-        return .Window_Creation_Failed
-    }
-    game.window = win
+    game.window = create_window(1280, 720, "Odincraft") or_return
     glfw.MakeContextCurrent(game.window)
-    OpenGL.load_up_to(
-        OPENGL_MAJOR_VERSION,
-        OPENGL_MINOR_VERSION,
-        glfw.gl_set_proc_address,
-    )
+    OpenGL.load_up_to(4, 1, glfw.gl_set_proc_address)
     game.is_initialized = true
-    return .None
+    return Game_Initialize_Error.None
 }
 
-game_terminate :: proc(game: ^Game) {
-    if game == nil {
-        return
-    }
-    game.is_initialized = false
-    if game.window != nil {
-        destroy_window(game.window)
-        game.window = nil
-    }
-    glfw.Terminate()
-}
+/*
+Terminate an existing game instance.
 
-game_run :: proc(game: ^Game) {
+### Parameters ###
+
+* `game` - The existing game instance to terminate.
+
+### Returns ###
+
+The error that occurred on failure; `.None` otherwise.
+*/
+game_terminate :: proc(game: ^Game) -> union {
+        Game_Terminate_Error,
+        Window_Destruction_Error,
+    } {
     if game == nil {
-        return
-    }
-    if game.window == nil {
-        return
+        return .Invalid_Game
     }
     if !game.is_initialized {
-        return
+        return .Not_Initialized
     }
     if game.is_running {
-        return
+        return .Still_Running
+    }
+    game.is_initialized = false
+    destroy_window(game.window) or_return
+    game.window = nil
+    return Game_Terminate_Error.None
+}
+
+/*
+Run an existing game instance.
+
+### Parameters ###
+
+* `game` - The existing game instance to run.
+
+### Returns ###
+
+The error that occurred on failure; `.None` otherwise.
+*/
+game_run :: proc(game: ^Game) -> Game_Run_Error {
+    if game == nil {
+        return .Invalid_Game
+    }
+    if !game.is_initialized {
+        return .Not_Initialized
+    }
+    if game.is_running {
+        return .Already_Running
     }
     game.is_running = true
     glfw.ShowWindow(game.window)
@@ -168,4 +289,5 @@ game_run :: proc(game: ^Game) {
     }
     glfw.HideWindow(game.window)
     game.is_running = false
+    return Game_Run_Error.None
 }
