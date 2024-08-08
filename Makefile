@@ -315,6 +315,44 @@ pre-lint-all:
 lint-all: pre-lint-all lint
 	@echo "Ran all lint goal"
 
+#-- Run goals
+
+.PHONY: pre-run-debug
+pre-run-debug:
+	@echo "Running debug run goal..."
+
+.PHONY: run-debug
+run-debug: pre-run-debug $(BUILD_DIR)/$(TARGET_NAME_DEBUG)
+	@echo "Running $(TARGET_NAME_DEBUG)..."
+	@echo "=== START OUTPUT ==="
+	@echo ""
+	@$(BUILD_DIR)/$(TARGET_NAME_DEBUG)
+	@echo ""
+	@echo "=== END OUTPUT ==="
+	@echo "Ran $(TARGET_NAME_DEBUG)"
+
+.PHONY: pre-run-release
+pre-run-release:
+	@echo "Running release run goal..."
+
+.PHONY: run-release
+run-release: pre-run-release $(BUILD_DIR)/$(TARGET_NAME_RELEASE)
+	@echo "Running $(TARGET_NAME_RELEASE)..."
+	@echo "=== START OUTPUT ==="
+	@echo ""
+	@$(BUILD_DIR)/$(TARGET_NAME_RELEASE)
+	@echo ""
+	@echo "=== END OUTPUT ==="
+	@echo "Ran $(TARGET_NAME_RELEASE)"
+
+.PHONY: pre-run
+pre-run:
+	@echo "Running default run goal..."
+
+.PHONY: run
+run: pre-run run-release
+	@echo "Ran default run goal"
+
 #-- General goals
 
 .DEFAULT_GOAL := default
