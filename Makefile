@@ -35,8 +35,8 @@ ODIN_CHECK_FLAGS_TESTS ?= -strict-style -vet-unused -vet-shadowing				\
 						  -vet-using-stmt -vet-using-param -vet-style			\
 						  -vet-semicolon -disallow-do -thread-count:4			\
 						  -no-entry-point
-ODIN_BUILD_COLLECTIONS ?= lib=$(LIB_DIR)
-ODIN_TEST_COLLECTIONS ?= lib=$(LIB_DIR) src=$(SOURCE_DIR)						\
+ODIN_BUILD_COLLECTIONS ?=
+ODIN_TEST_COLLECTIONS ?= src=$(SOURCE_DIR)										\
 						 test_utils=$(TEST_DIR)/utils
 ODIN_DEFINES ?= PROJECT_NAME="$(PROJECT_NAME)"									\
 				PROJECT_VERSION="$(PROJECT_VERSION)"							\
