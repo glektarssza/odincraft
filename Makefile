@@ -330,7 +330,7 @@ pre-test:
 	@echo "Running default test goal..."
 
 .PHONY: test
-test: pre-test
+test: pre-test | $(BUILD_DIR)
 	$(ODIN_COMPILER) test $(TEST_DIR)											\
 		$(ODIN_TEST_FLAGS)														\
 		-out:$(BUILD_DIR)/$(TARGET_NAME_TESTS)									\
