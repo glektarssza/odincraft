@@ -7,6 +7,7 @@ PROJECT_DESCRIPTION := A simple Minecraft clone written in Odin using OpenGL.
 ## Project Directories
 SOURCE_DIR := src
 LIB_DIR := lib
+ASSETS_DIR := assets
 TEST_DIR := tests
 BUILD_DIR := build
 DIST_DIR := dist
@@ -60,6 +61,7 @@ endif
 #-- Sanitize all directories so they don't interfere with alias targets
 SOURCE_DIR := $(abspath $(SOURCE_DIR))
 LIB_DIR := $(abspath $(LIB_DIR))
+ASSETS_DIR := $(abspath $(ASSETS_DIR))
 TEST_DIR := $(abspath $(TEST_DIR))
 BUILD_DIR := $(abspath $(BUILD_DIR))
 DIST_DIR := $(abspath $(DIST_DIR))
@@ -68,7 +70,12 @@ DIST_DIR := $(abspath $(DIST_DIR))
 SOURCE_FILES := $(wildcard $(SOURCE_DIR)/*.odin)								\
 				$(wildcard $(SOURCE_DIR)/**/*.odin)
 
+#-- Determine assets files
+ASSETS_FILES := $(wildcard $(ASSETS_DIR)/*)									\
+				$(wildcard $(ASSETS_DIR)/**/*)
+
 #-- Main build goals
+
 $(BUILD_DIR)/$(TARGET_NAME_DEBUG): $(SOURCE_FILES) | $(BUILD_DIR)
 	@echo "Building $(TARGET_NAME_DEBUG)..."
 	$(ODIN_COMPILER) build $(SOURCE_DIR)										\
@@ -87,17 +94,33 @@ $(BUILD_DIR)/$(TARGET_NAME_RELEASE): $(SOURCE_FILES) | $(BUILD_DIR)
 		$(foreach define,$(ODIN_DEFINES),-define:$(define))
 	@echo "Built $(TARGET_NAME_RELEASE)"
 
+#-- Distribution goals
+
+$(DIST_DIR)/debug/$(TARGET_NAME_DEBUG): $(BUILD_DIR)/$(TARGET_NAME_DEBUG) $(ASSETS_FILES) | $(DIST_DIR)/debug/
+	@echo "Generating debug distribution..."
+	@cp $(BUILD_DIR)/$(TARGET_NAME_DEBUG) $(DIST_DIR)/debug/
+	# NOTE: Commented out until we have assets to copy
+	# @cp -r $(ASSETS_DIR) $(DIST_DIR)/debug/
+	@echo "Generated debug distribution"
+
+$(DIST_DIR)/release/$(TARGET_NAME_RELEASE): $(BUILD_DIR)/$(TARGET_NAME_RELEASE) $(ASSETS_FILES) | $(DIST_DIR)/release/
+	@echo "Generating release distribution..."
+	@cp $(BUILD_DIR)/$(TARGET_NAME_RELEASE) $(DIST_DIR)/release/
+	# NOTE: Commented out until we have assets to copy
+	# @cp -r $(ASSETS_DIR) $(DIST_DIR)/release/
+	@echo "Generated release distribution"
+
 #-- Archive goals
 
-$(DIST_DIR)/$(TARGET_NAME_ARCHIVE_DEBUG): $(BUILD_DIR)/$(TARGET_NAME_DEBUG) | $(DIST_DIR)
+$(TARGET_NAME_ARCHIVE_DEBUG): $(DIST_DIR)/debug/$(TARGET_NAME_DEBUG) | $(DIST_DIR)/debug/
 	@echo "Creating $(TARGET_NAME_ARCHIVE_DEBUG)..."
-	$(ARCHIVER) a -mx=9 $(DIST_DIR)/$(TARGET_NAME_ARCHIVE_DEBUG)				\
-		$(BUILD_DIR)/$(TARGET_NAME_DEBUG)
+	$(ARCHIVER) a -mx=9 $(TARGET_NAME_ARCHIVE_DEBUG) "$(DIST_DIR)/debug/*"
+	@echo "Created $(TARGET_NAME_ARCHIVE_DEBUG)"
 
-$(DIST_DIR)/$(TARGET_NAME_ARCHIVE_RELEASE): $(BUILD_DIR)/$(TARGET_NAME_RELEASE) | $(DIST_DIR)
+$(TARGET_NAME_ARCHIVE_RELEASE): $(DIST_DIR)/release/$(TARGET_NAME_RELEASE) | $(DIST_DIR)/release/
 	@echo "Creating $(TARGET_NAME_ARCHIVE_RELEASE)..."
-	$(ARCHIVER) a -mx=9 $(DIST_DIR)/$(TARGET_NAME_ARCHIVE_RELEASE)				\
-		$(BUILD_DIR)/$(TARGET_NAME_RELEASE)
+	$(ARCHIVER) a -mx=9 $(TARGET_NAME_ARCHIVE_RELEASE) "$(DIST_DIR)/release/*"
+	@echo "Created $(TARGET_NAME_ARCHIVE_RELEASE)"
 
 #-- Directory creation goals
 
@@ -105,9 +128,13 @@ $(BUILD_DIR):
 	@echo "Creating '$(BUILD_DIR)' directory..."
 	@mkdir -p $(BUILD_DIR)
 
-$(DIST_DIR):
-	@echo "Creating '$(DIST_DIR)' directory..."
-	@mkdir -p $(DIST_DIR)
+$(DIST_DIR)/debug/:
+	@echo "Creating '$(DIST_DIR)/debug/' directory..."
+	@mkdir -p $(DIST_DIR)/debug/
+
+$(DIST_DIR)/release/:
+	@echo "Creating '$(DIST_DIR)/release/' directory..."
+	@mkdir -p $(DIST_DIR)/release/
 
 #-- Build goals
 
@@ -176,14 +203,50 @@ pre-clean-build:
 clean-build: pre-clean-build clean-debug clean-release
 	@echo "Ran build clean goal"
 
+.PHONY: pre-clean-dist-debug
+pre-clean-dist-debug:
+	@echo "Running debug distribution clean goal..."
+
+.PHONY: clean-dist-debug
+clean-dist-debug: pre-clean-dist-debug
+	@echo "Cleaning '$(DIST_DIR)/debug/'..."
+	@rm -rf $(DIST_DIR)/debug/
+	@echo "Ran debug distribution clean goal"
+
+.PHONY: pre-clean-dist-release
+pre-clean-dist-release:
+	@echo "Running release distribution clean goal..."
+
+.PHONY: clean-dist-release
+clean-dist-release: pre-clean-dist-release
+	@echo "Cleaning '$(DIST_DIR)/release/'..."
+	@rm -rf $(DIST_DIR)/release/
+	@echo "Ran release distribution clean goal"
+
+.PHONY: pre-clean-dist
+pre-clean-dist:
+	@echo "Running distribution clean goal..."
+
+.PHONY: clean-dist
+clean-dist: pre-clean-dist clean-dist-debug clean-dist-release
+	@echo "Ran distribution clean goal"
+
+.PHONY: pre-clean-dist-all
+pre-clean-dist-all:
+	@echo "Running all distribution clean goal..."
+
+.PHONY: clean-dist-all
+clean-dist-all: pre-clean-dist-all clean-dist
+	@echo "Ran all distribution clean goal"
+
 .PHONY: pre-clean-archive-debug
 pre-clean-archive-debug:
 	@echo "Running debug archive clean goal..."
 
 .PHONY: clean-archive-debug
 clean-archive-debug: pre-clean-archive-debug
-	@echo "Cleaning '$(DIST_DIR)/$(TARGET_NAME_ARCHIVE_DEBUG)'..."
-	@rm -rf $(DIST_DIR)/$(TARGET_NAME_ARCHIVE_DEBUG)
+	@echo "Cleaning '$(TARGET_NAME_ARCHIVE_DEBUG)'..."
+	@rm -rf $(TARGET_NAME_ARCHIVE_DEBUG)
 	@echo "Ran debug archive clean goal"
 
 .PHONY: pre-clean-archive-release
@@ -192,8 +255,8 @@ pre-clean-archive-release:
 
 .PHONY: clean-archive-release
 clean-archive-release: pre-clean-archive-release
-	@echo "Cleaning '$(DIST_DIR)/$(TARGET_NAME_ARCHIVE_RELEASE)'..."
-	@rm -rf $(DIST_DIR)/$(TARGET_NAME_ARCHIVE_RELEASE)
+	@echo "Cleaning '$(TARGET_NAME_ARCHIVE_RELEASE)'..."
+	@rm -rf $(TARGET_NAME_ARCHIVE_RELEASE)
 	@echo "Ran release archive clean goal"
 
 .PHONY: pre-clean-archive
@@ -223,7 +286,7 @@ pre-clean:
 	@echo "Running default clean goal..."
 
 .PHONY: clean
-clean: pre-clean clean-build clean-archive clean-tests
+clean: pre-clean clean-build clean-archive clean-tests clean-dist
 	@echo "Ran default clean goal"
 
 .PHONY: pre-clean-all
@@ -231,7 +294,7 @@ pre-clean-all:
 	@echo "Running all clean goal..."
 
 .PHONY: clean-all
-clean-all: pre-clean-all clean-build clean-archive clean-tests
+clean-all: pre-clean-all clean-build clean-archive clean-tests clean-dist
 	@echo "Ran all clean goal"
 
 #-- Archive goals
@@ -249,7 +312,7 @@ pre-archive-release:
 	@echo "Running release archive goal..."
 
 .PHONY: archive-release
-archive-release: pre-archive-release $(DIST_DIR)/$(TARGET_NAME_ARCHIVE_RELEASE)
+archive-release: pre-archive-release $(TARGET_NAME_ARCHIVE_RELEASE)
 	@echo "Ran release archive goal"
 
 .PHONY: pre-archive-debug
@@ -257,7 +320,7 @@ pre-archive-debug:
 	@echo "Running debug archive goal..."
 
 .PHONY: archive-debug
-archive-debug: pre-archive-debug $(DIST_DIR)/$(TARGET_NAME_ARCHIVE_DEBUG)
+archive-debug: pre-archive-debug $(TARGET_NAME_ARCHIVE_DEBUG)
 	@echo "Ran debug archive goal"
 
 #-- Test goals
@@ -362,3 +425,15 @@ default: build
 
 .PHONY: all
 all: build-all
+
+.PHONY: dist-debug
+dist-debug: $(DIST_DIR)/debug/$(TARGET_NAME_DEBUG)
+
+.PHONY: dist-release
+dist-release: $(DIST_DIR)/release/$(TARGET_NAME_RELEASE)
+
+.PHONY: dist
+dist: dist-release
+
+.PHONY: dist-all
+dist-all: dist-debug dist-release
