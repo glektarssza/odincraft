@@ -38,9 +38,9 @@ ODIN_CHECK_FLAGS_TESTS ?= -strict-style -vet-unused -vet-shadowing				\
 ODIN_BUILD_COLLECTIONS ?=
 ODIN_TEST_COLLECTIONS ?= src=$(SOURCE_DIR)										\
 						 test_utils=$(TEST_DIR)/utils
-ODIN_DEFINES ?= PROJECT_NAME="$(PROJECT_NAME)"									\
-				PROJECT_VERSION="$(PROJECT_VERSION)"							\
-				PROJECT_DESCRIPTION="$(PROJECT_DESCRIPTION)"
+ODIN_DEFINES ?= -define:PROJECT_NAME="$(PROJECT_NAME)"							\
+				-define:PROJECT_VERSION="$(PROJECT_VERSION)"					\
+				-define:PROJECT_DESCRIPTION="$(PROJECT_DESCRIPTION)"
 
 #!! Do not edit below this line unless you know what you're doing !!
 
@@ -78,11 +78,9 @@ ASSETS_FILES := $(wildcard $(ASSETS_DIR)/*)									\
 
 $(BUILD_DIR)/$(TARGET_NAME_DEBUG): $(SOURCE_FILES) | $(BUILD_DIR)
 	@echo "Building $(TARGET_NAME_DEBUG)..."
-	$(ODIN_COMPILER) build $(SOURCE_DIR)										\
-		-out:$(BUILD_DIR)/$(TARGET_NAME_DEBUG)									\
-		$(ODIN_BUILD_FLAGS) $(ODIN_BUILD_FLAGS_DEBUG)							\
-		$(foreach collect,$(ODIN_BUILD_COLLECTIONS),-collection:$(collect))		\
-		$(foreach define,$(ODIN_DEFINES),-define:$(define))
+	$(ODIN_COMPILER) build $(SOURCE_DIR) -out:$(BUILD_DIR)/$(TARGET_NAME_DEBUG)	\
+		$(ODIN_BUILD_FLAGS) $(ODIN_BUILD_FLAGS_DEBUG) $(ODIN_BUILD_COLLECTIONS) \
+		$(ODIN_DEFINES)
 	@echo "Built $(TARGET_NAME_DEBUG)"
 
 $(BUILD_DIR)/$(TARGET_NAME_RELEASE): $(SOURCE_FILES) | $(BUILD_DIR)
@@ -90,8 +88,7 @@ $(BUILD_DIR)/$(TARGET_NAME_RELEASE): $(SOURCE_FILES) | $(BUILD_DIR)
 	$(ODIN_COMPILER) build $(SOURCE_DIR)										\
 		-out:$(BUILD_DIR)/$(TARGET_NAME_RELEASE)								\
 		$(ODIN_BUILD_FLAGS) $(ODIN_BUILD_FLAGS_RELEASE)							\
-		$(foreach collect,$(ODIN_BUILD_COLLECTIONS),-collection:$(collect))		\
-		$(foreach define,$(ODIN_DEFINES),-define:$(define))
+		$(ODIN_BUILD_COLLECTIONS) $(ODIN_DEFINES)
 	@echo "Built $(TARGET_NAME_RELEASE)"
 
 #-- Distribution goals
@@ -331,11 +328,8 @@ pre-test:
 
 .PHONY: test
 test: pre-test | $(BUILD_DIR)
-	$(ODIN_COMPILER) test $(TEST_DIR)											\
-		$(ODIN_TEST_FLAGS)														\
-		-out:$(BUILD_DIR)/$(TARGET_NAME_TESTS)									\
-		$(foreach collect,$(ODIN_TEST_COLLECTIONS),-collection:$(collect))		\
-		$(foreach define,$(ODIN_DEFINES),-define:$(define))
+	$(ODIN_COMPILER) test $(TEST_DIR) -out:$(BUILD_DIR)/$(TARGET_NAME_TESTS)	\
+		$(ODIN_TEST_FLAGS) $(ODIN_TEST_COLLECTIONS) $(ODIN_DEFINES)
 	@echo "Ran default test goal"
 
 #-- Lint goals
@@ -346,9 +340,8 @@ pre-lint-source:
 
 .PHONY: lint-source
 lint-source: pre-lint-source
-	$(ODIN_COMPILER) check $(SOURCE_DIR)										\
-		$(ODIN_CHECK_FLAGS_SOURCE)														\
-		$(foreach define,$(ODIN_DEFINES),-define:$(define))
+	$(ODIN_COMPILER) check $(SOURCE_DIR) $(ODIN_CHECK_FLAGS_SOURCE)				\
+		$(ODIN_DEFINES)
 	@echo "Ran source lint goal"
 
 .PHONY: pre-lint-tests
@@ -357,9 +350,8 @@ pre-lint-tests:
 
 .PHONY: lint-tests
 lint-tests: pre-lint-tests
-	$(ODIN_COMPILER) check $(TEST_DIR)										\
-		$(ODIN_CHECK_FLAGS_TESTS)														\
-		$(foreach define,$(ODIN_DEFINES),-define:$(define))
+	$(ODIN_COMPILER) check $(TEST_DIR) $(ODIN_CHECK_FLAGS_TESTS)				\
+		$(ODIN_DEFINES)
 	@echo "Ran tests lint goal"
 
 .PHONY: pre-lint
