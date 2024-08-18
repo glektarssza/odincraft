@@ -412,6 +412,11 @@ run: pre-run run-release
 
 .DEFAULT_GOAL := default
 
+.PHONY: list
+
+list:
+	@LC_ALL=C $(MAKE) -pRrq -f $(firstword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: 'BEGIN {OFS=""} {if ($$0 ~ /(^[^#.]|: phony)/) {if ($$0 ~ "^C:(\/|\\)") {print $$1,":",$$2;} else {print $$1;}}}' | sort | egrep -v -e '^[^[:alnum:]]' | egrep -v -e '^$@$$'
+
 .PHONY: default
 default: build
 
