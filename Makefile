@@ -29,7 +29,7 @@ ODIN_BUILD_FLAGS_DEBUG ?= -o:none -debug
 ODIN_BUILD_FLAGS_RELEASE ?= -o:minimal
 ODIN_TEST_FLAGS ?= -o:none -debug
 ODIN_CHECK_FLAGS_SOURCE ?= -strict-style -vet-unused -vet-shadowing				\
-						   -vet-using-stmt -vet-using-param -vet-style 			\
+						   -vet-using-stmt -vet-using-param -vet-style			\
 						   -vet-semicolon -disallow-do -thread-count:4
 ODIN_CHECK_FLAGS_TESTS ?= -strict-style -vet-unused -vet-shadowing				\
 						  -vet-using-stmt -vet-using-param -vet-style			\
@@ -71,7 +71,7 @@ SOURCE_FILES := $(wildcard $(SOURCE_DIR)/*.odin)								\
 				$(wildcard $(SOURCE_DIR)/**/*.odin)
 
 #-- Determine assets files
-ASSETS_FILES := $(wildcard $(ASSETS_DIR)/*)									\
+ASSETS_FILES := $(wildcard $(ASSETS_DIR)/*)										\
 				$(wildcard $(ASSETS_DIR)/**/*)
 
 #-- Main build goals
