@@ -294,6 +294,32 @@ pre-clean-all:
 clean-all: pre-clean-all clean-build clean-archive clean-tests clean-dist
 	@echo "Ran all clean goal"
 
+#-- Rebuild goals
+
+.PHONY: pre-rebuild
+pre-rebuild:
+	@echo "Running default rebuild goal..."
+
+.PHONY: rebuild
+rebuild: pre-rebuild rebuild-release
+	@echo "Ran default rebuild goal"
+
+.PHONY: pre-rebuild-release
+pre-rebuild-release:
+	@echo "Running release rebuild goal..."
+
+.PHONY: rebuild-release
+rebuild-release: pre-rebuild-release clean-release build-release
+	@echo "Ran release rebuild goal"
+
+.PHONY: pre-rebuild-debug
+pre-rebuild-debug:
+	@echo "Running debug rebuild goal..."
+
+.PHONY: rebuild-debug
+rebuild-debug: pre-rebuild-debug clean-debug build-debug
+	@echo "Ran debug rebuild goal"
+
 #-- Archive goals
 
 .PHONY: pre-archive
