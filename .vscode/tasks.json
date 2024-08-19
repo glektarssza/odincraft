@@ -1,4 +1,725 @@
 {
     "version": "2.0.0",
-    "tasks": []
+    "tasks": [
+        {
+            "label": "build",
+            "detail": "Build the project.",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiWhite"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "build"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build:debug",
+            "detail": "Build the project in debug mode.",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiCyan"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "build-debug"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build:release",
+            "detail": "Build the project in release mode.",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiGreen"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "build-release"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "clean",
+            "detail": "Clean the project.",
+            "icon": {
+                "id": "trash",
+                "color": "terminal.ansiWhite"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "clean:debug",
+            "detail": "Clean the project in debug mode.",
+            "icon": {
+                "id": "trash",
+                "color": "terminal.ansiCyan"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean-debug"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "clean:release",
+            "detail": "Clean the project in release mode.",
+            "icon": {
+                "id": "trash",
+                "color": "terminal.ansiGreen"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean-release"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "rebuild",
+            "detail": "Rebuild the project.",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiWhite"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "rebuild"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "rebuild:debug",
+            "detail": "Rebuild the project in debug mode.",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiCyan"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "rebuild-debug"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "rebuild:release",
+            "detail": "Rebuild the project in release mode.",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiGreen"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "rebuild-release"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "archive",
+            "detail": "Generate a project archive.",
+            "icon": {
+                "id": "package",
+                "color": "terminal.ansiWhite"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "archive"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "archive:debug",
+            "detail": "Generate a project archive in debug mode.",
+            "icon": {
+                "id": "package",
+                "color": "terminal.ansiCyan"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "archive-debug"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "archive:release",
+            "detail": "Generate a project archive in release mode.",
+            "icon": {
+                "id": "package",
+                "color": "terminal.ansiGreen"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "archive-release"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "dist",
+            "detail": "Generate a project distribution archive.",
+            "icon": {
+                "id": "package",
+                "color": "terminal.ansiWhite"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "dist"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "dist:debug",
+            "detail": "Generate a project distribution archive in debug mode.",
+            "icon": {
+                "id": "package",
+                "color": "terminal.ansiCyan"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "dist-debug"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "dist:release",
+            "detail": "Generate a project distribution archive in release mode.",
+            "icon": {
+                "id": "run",
+                "color": "terminal.ansiGreen"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "dist-release"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "run",
+            "detail": "Run the project.",
+            "icon": {
+                "id": "run",
+                "color": "terminal.ansiWhite"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "run"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "run:debug",
+            "detail": "Run the project in debug mode.",
+            "icon": {
+                "id": "run",
+                "color": "terminal.ansiCyan"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "run-debug"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "run:release",
+            "detail": "Run the project in release mode.",
+            "icon": {
+                "id": "run",
+                "color": "terminal.ansiGreen"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "run-release"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "test",
+            "detail": "Test the project.",
+            "icon": {
+                "id": "beaker",
+                "color": "terminal.ansiRed"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "test"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "lint",
+            "detail": "Lint the project.",
+            "icon": {
+                "id": "search-fuzzy",
+                "color": "terminal.ansiYellow"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "hide": false,
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "isBackground": false,
+            "promptOnClose": false,
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "lint"
+            ],
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": []
+        }
+    ]
 }
