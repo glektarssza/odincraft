@@ -11,7 +11,7 @@
             },
             "args": [],
             "cwd": "${workspaceFolder}",
-            "preLaunchTask": "build:debug"
+            "preLaunchTask": "${defaultBuildTask}"
         }
     ]
 }
