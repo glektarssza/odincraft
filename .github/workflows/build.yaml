@@ -40,6 +40,12 @@ jobs:
         name: Install system dependencies (Linux)
         if: inputs.build-os == 'linux'
         run: sudo apt update && sudo apt install --assume-yes --no-install-recommends libglfw3-dev
+      - id: install-tasks
+        name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.github-token || secrets.GITHUB_TOKEN }}
       - id: checkout-repository
         name: Checkout repository
         uses: actions/checkout@v4
@@ -54,7 +60,7 @@ jobs:
           release: latest
       - id: build-distribution
         name: Build distribution
-        run: make dist
+        run: task dist
       - id: upload-artifacts
         name: Upload artifacts
         uses: actions/upload-artifact@v4

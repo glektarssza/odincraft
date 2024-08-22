@@ -41,6 +41,7 @@ tags
 ols.json
 
 # Artifacts #
+.task/
 build/
 dist/
 *.zip
