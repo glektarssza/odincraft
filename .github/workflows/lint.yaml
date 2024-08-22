@@ -12,6 +12,12 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
+      - id: install-tasks
+        name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.github-token || secrets.GITHUB_TOKEN }}
       - id: checkout-repository
         name: Checkout repository
         uses: actions/checkout@v4
@@ -26,4 +32,4 @@ jobs:
           release: latest
       - id: lint
         name: Lint
-        run: make lint
+        run: task lint
