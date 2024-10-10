@@ -30,7 +30,7 @@ vars:
   compilerBaseFlags: "-build-mode:exe"
   compilerDebugFlags: "{{.compilerBaseFlags}} -o:none -debug"
   compilerReleaseFlags: "{{.compilerBaseFlags}} -o:minimal"
-  compilerTestFlags: "-o:minimal -debug"
+  compilerTestFlags: "-o:minimal -debug -all-packages"
   compilerCheckFlags: "-strict-style -vet-unused -vet-shadowing -vet-using-stmt -vet-using-param -vet-style -vet-semicolon -disallow-do -thread-count:4"
   compilerLibCheckFlags: "{{.compilerCheckFlags}} -no-entry-point"
   compilerTestsCheckFlags: "{{.compilerCheckFlags}} -no-entry-point"
@@ -68,6 +68,9 @@ tasks:
       - create-build-dir
     sources:
       - "{{.srcDir}}/*.odin"
+      - "{{.srcDir}}/**/*.odin"
+      - "{{.libDir}}/*.odin"
+      - "{{.libDir}}/**/*.odin"
     generates:
       - "{{.buildDir}}/{{.outputNameRelease}}{{exeExt}}"
     cmd: "{{.compiler}} build {{.srcDir}} -out:{{.buildDir}}/{{.outputNameRelease}}{{exeExt}} {{.compilerReleaseFlags}} {{.compilerDefines}} {{.compilerCollections}}"
@@ -77,6 +80,9 @@ tasks:
       - create-build-dir
     sources:
       - "{{.srcDir}}/*.odin"
+      - "{{.srcDir}}/**/*.odin"
+      - "{{.libDir}}/*.odin"
+      - "{{.libDir}}/**/*.odin"
     generates:
       - "{{.buildDir}}/{{.outputNameDebug}}{{exeExt}}"
     cmd: "{{.compiler}} build {{.srcDir}} -out:{{.buildDir}}/{{.outputNameDebug}}{{exeExt}} {{.compilerDebugFlags}} {{.compilerDefines}} {{.compilerCollections}}"
@@ -99,6 +105,15 @@ tasks:
     cmds:
       - bash -c 'rm -f {{.buildDir}}/{{.outputNameDebug}}{{exeExt}}'
       - cmd: bash -c 'rm -f {{.buildDir}}/{{.outputNameDebug}}.pdb'
+        platforms:
+          - windows
+  clean-test:
+    desc: Clean the project in test mode.
+    status:
+      - bash -c 'test ! -f "{{.buildDir}}/{{.outputNameTests}}{{exeExt}}"'
+    cmds:
+      - bash -c 'rm -f {{.buildDir}}/{{.outputNameTests}}{{exeExt}}'
+      - cmd: bash -c 'rm -f {{.buildDir}}/{{.outputNameTests}}.pdb'
         platforms:
           - windows
   clean-dist-release:
@@ -136,6 +151,7 @@ tasks:
     deps:
       - clean-release
       - clean-debug
+      - clean-test
       - clean-dist-release
       - clean-dist-debug
       - clean-archive-release
@@ -241,7 +257,11 @@ tasks:
       - create-build-dir
     sources:
       - "{{.srcDir}}/*.odin"
+      - "{{.srcDir}}/**/*.odin"
+      - "{{.libDir}}/*.odin"
+      - "{{.libDir}}/**/*.odin"
       - "{{.testsDir}}/*.odin"
+      - "{{.testsDir}}/**/*.odin"
     generates:
       - "{{.buildDir}}/{{.outputNameTests}}{{exeExt}}"
     cmd: "{{.compiler}} test {{.testsDir}} -out:{{.buildDir}}/{{.outputNameTests}}{{exeExt}} {{.compilerTestFlags}} {{.compilerTestDefines}} {{.compilerTestCollections}}"
@@ -249,16 +269,19 @@ tasks:
     desc: Lint the project sources.
     sources:
       - "{{.srcDir}}/*.odin"
+      - "{{.srcDir}}/**/*.odin"
     cmd: "{{.compiler}} check {{.srcDir}} {{.compilerCheckFlags}} {{.compilerDefines}}"
   lint-lib:
     desc: Lint the project unit lib.
     sources:
       - "{{.libDir}}/*.odin"
+      - "{{.libDir}}/**/*.odin"
     cmd: "{{.compiler}} check {{.libDir}}/* {{.compilerLibCheckFlags}} {{.compilerDefines}}"
   lint-tests:
     desc: Lint the project unit tests.
     sources:
       - "{{.testsDir}}/*.odin"
+      - "{{.testsDir}}/**/*.odin"
     cmd: "{{.compiler}} check {{.testsDir}} {{.compilerTestsCheckFlags}} {{.compilerDefines}}"
   lint-all:
     desc: Lint the project sources and unit tests.
