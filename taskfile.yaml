@@ -13,26 +13,26 @@ vars:
   distDir: dist
   #-- Output Settings
   outputBaseName: odincraft
-  outputNameDebug: '{{.outputBaseName}}-debug'
-  outputNameRelease: '{{.outputBaseName}}-release'
-  outputNameTests: '{{.outputBaseName}}-tests'
-  archiveBaseName: '{{.outputBaseName}}-{{.projectVersion}}'
-  archiveNameDebug: '{{.archiveBaseName}}-debug.zip'
-  archiveNameRelease: '{{.archiveBaseName}}-release.zip'
+  outputNameDebug: "{{.outputBaseName}}-debug"
+  outputNameRelease: "{{.outputBaseName}}-release"
+  outputNameTests: "{{.outputBaseName}}-tests"
+  archiveBaseName: "{{.outputBaseName}}-{{.projectVersion}}"
+  archiveNameDebug: "{{.archiveBaseName}}-debug.zip"
+  archiveNameRelease: "{{.archiveBaseName}}-release.zip"
   #-- Compilers
   compiler: odin{{exeExt}}
   archiver: '{{if eq OS "windows"}}7z{{else}}7zz{{end}}{{exeExt}}'
   #-- Compiler Flags
   compilerDefines: -define:PROJECT_NAME="{{.projectName}}" -define:PROJECT_VERSION="{{.projectVersion}}" -define:PROJECT_DESCRIPTION="{{.projectDescription}}"
-  compilerTestDefines: '{{.compilerDefines}}'
-  compilerCollections: ''
-  compilerTestCollections: '{{.compilerCollections}} -collection:src={{.srcDir}} -collection:test_utils={{.testsDir}}/utils'
-  compilerBaseFlags: '-build-mode:exe'
-  compilerDebugFlags: '{{.compilerBaseFlags}} -o:none -debug'
-  compilerReleaseFlags: '{{.compilerBaseFlags}} -o:minimal'
-  compilerTestFlags: '-o:minimal -debug'
-  compilerCheckFlags: '-strict-style -vet-unused -vet-shadowing -vet-using-stmt -vet-using-param -vet-style -vet-semicolon -disallow-do -thread-count:4'
-  compilerTestsCheckFlags: '{{.compilerCheckFlags}} -no-entry-point'
+  compilerTestDefines: "{{.compilerDefines}}"
+  compilerCollections: ""
+  compilerTestCollections: "{{.compilerCollections}} -collection:src={{.srcDir}} -collection:test_utils={{.testsDir}}/utils"
+  compilerBaseFlags: "-build-mode:exe"
+  compilerDebugFlags: "{{.compilerBaseFlags}} -o:none -debug"
+  compilerReleaseFlags: "{{.compilerBaseFlags}} -o:minimal"
+  compilerTestFlags: "-o:minimal -debug"
+  compilerCheckFlags: "-strict-style -vet-unused -vet-shadowing -vet-using-stmt -vet-using-param -vet-style -vet-semicolon -disallow-do -thread-count:4"
+  compilerTestsCheckFlags: "{{.compilerCheckFlags}} -no-entry-point"
 tasks:
   create-build-dir:
     desc: Create the `build` directory.
@@ -66,19 +66,19 @@ tasks:
     deps:
       - create-build-dir
     sources:
-      - '{{.srcDir}}/*.odin'
+      - "{{.srcDir}}/*.odin"
     generates:
-      - '{{.buildDir}}/{{.outputNameRelease}}{{exeExt}}'
-    cmd: '{{.compiler}} build {{.srcDir}} -out:{{.buildDir}}/{{.outputNameRelease}}{{exeExt}} {{.compilerReleaseFlags}} {{.compilerDefines}} {{.compilerCollections}}'
+      - "{{.buildDir}}/{{.outputNameRelease}}{{exeExt}}"
+    cmd: "{{.compiler}} build {{.srcDir}} -out:{{.buildDir}}/{{.outputNameRelease}}{{exeExt}} {{.compilerReleaseFlags}} {{.compilerDefines}} {{.compilerCollections}}"
   build-debug:
     desc: Build the project in debug mode.
     deps:
       - create-build-dir
     sources:
-      - '{{.srcDir}}/*.odin'
+      - "{{.srcDir}}/*.odin"
     generates:
-      - '{{.buildDir}}/{{.outputNameDebug}}{{exeExt}}'
-    cmd: '{{.compiler}} build {{.srcDir}} -out:{{.buildDir}}/{{.outputNameDebug}}{{exeExt}} {{.compilerDebugFlags}} {{.compilerDefines}} {{.compilerCollections}}'
+      - "{{.buildDir}}/{{.outputNameDebug}}{{exeExt}}"
+    cmd: "{{.compiler}} build {{.srcDir}} -out:{{.buildDir}}/{{.outputNameDebug}}{{exeExt}} {{.compilerDebugFlags}} {{.compilerDefines}} {{.compilerCollections}}"
   build-all:
     desc: Build the project in both release and debug modes.
     deps:
@@ -174,9 +174,9 @@ tasks:
       - build-release
       - create-release-dist-dir
     sources:
-      - '{{.buildDir}}/{{.outputNameRelease}}{{exeExt}}'
+      - "{{.buildDir}}/{{.outputNameRelease}}{{exeExt}}"
     generates:
-      - '{{.distDir}}/release/{{.outputNameRelease}}{{exeExt}}'
+      - "{{.distDir}}/release/{{.outputNameRelease}}{{exeExt}}"
     cmd: bash -c 'cp {{.buildDir}}/{{.outputNameRelease}}{{exeExt}} {{.distDir}}/release/{{.outputNameRelease}}{{exeExt}}'
   dist-debug:
     desc: Generate a debug distribution.
@@ -184,9 +184,9 @@ tasks:
       - build-debug
       - create-debug-dist-dir
     sources:
-      - '{{.buildDir}}/{{.outputNameDebug}}.*'
+      - "{{.buildDir}}/{{.outputNameDebug}}.*"
     generates:
-      - '{{.distDir}}/debug/{{.outputNameDebug}}.*'
+      - "{{.distDir}}/debug/{{.outputNameDebug}}.*"
     cmds:
       - bash -c 'cp {{.buildDir}}/{{.outputNameDebug}}{{exeExt}} {{.distDir}}/debug/{{.outputNameDebug}}{{exeExt}}'
       - cmd: bash -c 'cp {{.buildDir}}/{{.outputNameDebug}}.pdb {{.distDir}}/debug/{{.outputNameDebug}}.pdb'
@@ -204,18 +204,18 @@ tasks:
     deps:
       - dist-release
     sources:
-      - '{{.distDir}}/release/{{.outputNameRelease}}{{exeExt}}'
+      - "{{.distDir}}/release/{{.outputNameRelease}}{{exeExt}}"
     generates:
-      - '{{.distDir}}/{{.archiveNameRelease}}'
+      - "{{.distDir}}/{{.archiveNameRelease}}"
     cmd: '{{.archiver}} a -mx=0 {{.distDir}}/{{.archiveNameRelease}} "{{.distDir}}/release/*"'
   archive-debug:
     desc: Generate a debug archive.
     deps:
       - dist-debug
     sources:
-      - '{{.distDir}}/debug/{{.outputNameDebug}}{{exeExt}}'
+      - "{{.distDir}}/debug/{{.outputNameDebug}}{{exeExt}}"
     generates:
-      - '{{.distDir}}/{{.archiveNameDebug}}'
+      - "{{.distDir}}/{{.archiveNameDebug}}"
     cmd: '{{.archiver}} a -mx=0 {{.distDir}}/{{.archiveNameDebug}} "{{.distDir}}/debug/*"'
   archive-all:
     desc: Generate both release and debug archives.
@@ -228,32 +228,32 @@ tasks:
       - run
     deps:
       - build-release
-    cmd: '{{.buildDir}}/{{.outputNameRelease}}{{exeExt}}'
+    cmd: "{{.buildDir}}/{{.outputNameRelease}}{{exeExt}}"
   run-debug:
     desc: Run the project in debug mode.
     deps:
       - build-debug
-    cmd: '{{.buildDir}}/{{.outputNameDebug}}{{exeExt}}'
+    cmd: "{{.buildDir}}/{{.outputNameDebug}}{{exeExt}}"
   test:
     desc: Run the project unit tests.
     deps:
       - create-build-dir
     sources:
-      - '{{.srcDir}}/*.odin'
-      - '{{.testsDir}}/*.odin'
+      - "{{.srcDir}}/*.odin"
+      - "{{.testsDir}}/*.odin"
     generates:
-      - '{{.buildDir}}/{{.outputNameTests}}{{exeExt}}'
-    cmd: '{{.compiler}} test {{.testsDir}} -out:{{.buildDir}}/{{.outputNameTests}}{{exeExt}} {{.compilerTestFlags}} {{.compilerTestDefines}} {{.compilerTestCollections}}'
+      - "{{.buildDir}}/{{.outputNameTests}}{{exeExt}}"
+    cmd: "{{.compiler}} test {{.testsDir}} -out:{{.buildDir}}/{{.outputNameTests}}{{exeExt}} {{.compilerTestFlags}} {{.compilerTestDefines}} {{.compilerTestCollections}}"
   lint-source:
     desc: Lint the project sources.
     sources:
-      - '{{.srcDir}}/*.odin'
-    cmd: '{{.compiler}} check {{.srcDir}} {{.compilerCheckFlags}} {{.compilerDefines}}'
+      - "{{.srcDir}}/*.odin"
+    cmd: "{{.compiler}} check {{.srcDir}} {{.compilerCheckFlags}} {{.compilerDefines}}"
   lint-tests:
     desc: Lint the project unit tests.
     sources:
-      - '{{.testDir}}/*.odin'
-    cmd: '{{.compiler}} check {{.testsDir}} {{.compilerTestsCheckFlags}} {{.compilerDefines}}'
+      - "{{.testDir}}/*.odin"
+    cmd: "{{.compiler}} check {{.testsDir}} {{.compilerTestsCheckFlags}} {{.compilerDefines}}"
   lint-all:
     desc: Lint the project sources and unit tests.
     aliases:
