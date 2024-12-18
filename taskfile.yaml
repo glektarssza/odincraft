@@ -28,29 +28,77 @@ vars:
   ODIN_DEFINES: |
     -define:PROJECT_NAME="{{.PROJECT_NAME}}" \
     -define:PROJECT_DESCRIPTION="{{.PROJECT_DESCRIPTION}}" \
-    -define:PROJECT_VERSION="{{.PROJECT_VERSION}}"
+    -define:PROJECT_VERSION="{{.PROJECT_VERSION}}" \
   ODIN_DEBUG_DEFINES: ""
   ODIN_RELEASE_DEFINES: ""
   ODIN_TESTS_DEFINES: ""
   ODIN_COLLECTIONS_WITHOUT_LIB: ""
   ODIN_COLLECTIONS_WITH_LIB: |
-    -collection:lib="{{.LIB_DIRECTORY}}"
+    -collection:lib="{{.LIB_DIRECTORY}}" \
   ODIN_DEBUG_COLLECTIONS: ""
   ODIN_RELEASE_COLLECTIONS: ""
-  ODIN_TESTS_COLLECTIONS_WITHOUT_TEST_UTILS: ""
-  ODIN_TESTS_COLLECTIONS_WITH_TEST_UTILS: |
-    -collection:test_utils="{{.TESTS_DIRECTORY}}/utils"
+  ODIN_TESTS_COLLECTIONS_WITHOUT_TESTS_UTILS: ""
+  ODIN_TESTS_COLLECTIONS_WITH_TESTS_UTILS: |
+    -collection:test_utils="{{.TESTS_DIRECTORY}}/utils" \
   ODIN_FLAGS: |
-    -build-mode:exe
+    -build-mode:exe \
   ODIN_DEBUG_FLAGS: |
-    -o:none -debug
+    -o:none -debug \
   ODIN_RELEASE_FLAGS: |
-    -o:minimal
+    -o:minimal \
   ODIN_TESTS_FLAGS: |
-    -o:minimal -debug
+    -o:minimal -debug \
   ODIN_CHECK_FLAGS: |
     -strict-style -vet-unused -vet-shadowing -vet-using-stmt -vet-using-param \
-    -vet-style -vet-semicolon -disallow-do -thread-count:4
+    -vet-style -vet-semicolon -disallow-do -thread-count:4 \
+  ODIN_CHECK_LIB_FLAGS: |
+    -no-entry-point \
   ODIN_CHECK_TESTS_FLAGS: |
-    -no-entry-point
-tasks: {}
+    -no-entry-point \
+tasks:
+  lint-source:
+    desc: "Lint the project sources."
+    sources:
+      - "{{.SOURCE_DIRECTORY}}/*.odin"
+      - "{{.SOURCE_DIRECTORY}}/**/*.odin"
+    cmd: |
+      if [[ -d "{{.LIB_DIRECTORY}}" ]]; then
+        {{.ODIN_COMPILER}} check {{.SOURCE_DIRECTORY}} {{.ODIN_CHECK_FLAGS}} \
+          {{.ODIN_DEFINES}} {{.ODIN_COLLECTIONS_WITH_LIB}}
+      else
+        {{.ODIN_COMPILER}} check {{.SOURCE_DIRECTORY}} {{.ODIN_CHECK_FLAGS}} \
+          {{.ODIN_DEFINES}} {{.ODIN_COLLECTIONS_WITHOUT_LIB}}
+      fi
+  lint-tests:
+    desc: "Lint the project tests."
+    sources:
+      - "{{.TESTS_DIRECTORY}}/*.odin"
+      - "{{.TESTS_DIRECTORY}}/**/*.odin"
+    cmd: |
+      if [[ -d "{{.LIB_DIRECTORY}}" ]]; then
+        {{.ODIN_COMPILER}} check {{.SOURCE_DIRECTORY}} {{.ODIN_CHECK_FLAGS}} \
+          {{.ODIN_CHECK_TESTS__FLAGS}} {{.ODIN_DEFINES}} \
+          {{.ODIN_TESTS_COLLECTIONS_WITH_TESTS_UTILS}}
+      else
+        {{.ODIN_COMPILER}} check {{.SOURCE_DIRECTORY}} {{.ODIN_CHECK_FLAGS}} \
+          {{.ODIN_CHECK_TESTS__FLAGS}} {{.ODIN_DEFINES}} \
+          {{.ODIN_TESTS_COLLECTIONS_WITHOUT_TESTS_UTILS}}
+      fi
+  lint-lib:
+    desc: "Lint the project library code."
+    sources:
+      - "{{.LIB_DIRECTORY}}/*.odin"
+      - "{{.LIB_DIRECTORY}}/**/*.odin"
+    cmd: |
+      if [[ -d "{{.LIB_DIRECTORY}}" ]]; then
+        {{.ODIN_COMPILER}} check {{.LIB_DIRECTORY}} {{.ODIN_CHECK_FLAGS}} \
+          {{.ODIN_CHECK_LIB_FLAGS}} {{.ODIN_DEFINES}}
+      fi
+  lint-all:
+    desc: "Lint the entire project."
+    aliases:
+      - lint
+    cmds:
+      - task: lint-source
+      - task: lint-lib
+      - task: lint-tests
