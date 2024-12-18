@@ -1,4 +1,56 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: 3
-vars: {}
+vars:
+  #-- General Project Settings
+  PROJECT_NAME: "Odincraft"
+  PROJECT_DESCRIPTION: "A simple Minecraft clone written in Odin using OpenGL."
+  PROJECT_VERSION: "0.0.1"
+  #-- Project Directories
+  SOURCE_DIRECTORY: "src"
+  LIB_DIRECTORY: "lib"
+  ASSETS_DIRECTORY: "assets"
+  TESTS_DIRECTORY: "tests"
+  BUILD_DIRECTORY: "build"
+  OUTPUT_DIRECTORY: "dist"
+  #-- Output Settings
+  OUTPUT_BASE_NAME: "{{lower .PROJECT_NAME}}"
+  OUTPUT_NAME_DEBUG: "{{.OUTPUT_BASE_NAME}}-debug"
+  OUTPUT_NAME_RELEASE: "{{.OUTPUT_BASE_NAME}}"
+  OUTPUT_NAME_TESTS: "{{.OUTPUT_BASE_NAME}}-tests"
+  ARCHIVE_BASE_NAME: "{{.OUTPUT_BASE_NAME}}-{{.PROJECT_VERSION}}"
+  ARCHIVE_TYPE: "zip"
+  ARCHIVE_NAME_DEBUG: "{{.ARCHIVE_BASE_NAME}}-debug.{{.ARCHIVE_TYPE}}"
+  ARCHIVE_NAME_RELEASE: "{{.ARCHIVE_BASE_NAME}}-release.{{.ARCHIVE_TYPE}}"
+  #-- Toolchain Settings
+  ODIN_COMPILER: "odin"
+  ARCHIVER: '{{if eq OS "windows"}}7z{{else}}7zz{{end}}'
+  #-- Compiler Flags
+  ODIN_DEFINES: |
+    -define:PROJECT_NAME="{{.PROJECT_NAME}}" \
+    -define:PROJECT_DESCRIPTION="{{.PROJECT_DESCRIPTION}}" \
+    -define:PROJECT_VERSION="{{.PROJECT_VERSION}}"
+  ODIN_DEBUG_DEFINES: ""
+  ODIN_RELEASE_DEFINES: ""
+  ODIN_TESTS_DEFINES: ""
+  ODIN_COLLECTIONS_WITHOUT_LIB: ""
+  ODIN_COLLECTIONS_WITH_LIB: |
+    -collection:lib="{{.LIB_DIRECTORY}}"
+  ODIN_DEBUG_COLLECTIONS: ""
+  ODIN_RELEASE_COLLECTIONS: ""
+  ODIN_TESTS_COLLECTIONS_WITHOUT_TEST_UTILS: ""
+  ODIN_TESTS_COLLECTIONS_WITH_TEST_UTILS: |
+    -collection:test_utils="{{.TESTS_DIRECTORY}}/utils"
+  ODIN_FLAGS: |
+    -build-mode:exe
+  ODIN_DEBUG_FLAGS: |
+    -o:none -debug
+  ODIN_RELEASE_FLAGS: |
+    -o:minimal
+  ODIN_TESTS_FLAGS: |
+    -o:minimal -debug
+  ODIN_CHECK_FLAGS: |
+    -strict-style -vet-unused -vet-shadowing -vet-using-stmt -vet-using-param \
+    -vet-style -vet-semicolon -disallow-do -thread-count:4
+  ODIN_CHECK_TESTS_FLAGS: |
+    -no-entry-point
 tasks: {}
